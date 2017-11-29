@@ -1,0 +1,8 @@
+trenndal_snowtricks:
+    resource: "@TrenndalSnowtricksBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
+app:
+    resource: '@AppBundle/Controller/'
+    type: annotation
