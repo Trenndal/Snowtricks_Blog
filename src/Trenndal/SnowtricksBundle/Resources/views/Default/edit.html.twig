@@ -1,0 +1,33 @@
+{# src/Trenndal/SnowtricksBundle/Resources/views/Default/edit.html.twig #}
+{% extends 'templates/page.html.twig' %}
+
+{% block main %}
+	
+	
+	<div class="bg-faded p-4 my-4">
+		{{ form_start(form, {'attr': {'class': 'form-horizontal'}}) }}
+		{{ form_errors(form) }}
+		
+		{{ form_row(form.author) }}
+		{{ form_row(form.author) }}
+		{{ form_row(form.author) }}
+		
+		{{ form_widget(form.save, {'attr': {'class': 'btn btn-secondary'}}) }}
+		
+		{{ form_rest(form) }}
+		
+		{{ form_end(form) }}
+		<ul class="pagination justify-content-center mb-0">
+			<li class="page-item disabled">
+				<a class="page-link" href="#">&larr; Older</a>
+			</li>
+			<li class="page-item disabled">
+				<a class="page-link" href="#">1</a>
+			</li>
+			<li class="page-item disabled">
+				<a class="page-link" href="#">Newer &rarr;</a>
+			</li>
+		</ul>
+	</div>
+{% endblock %}
+
