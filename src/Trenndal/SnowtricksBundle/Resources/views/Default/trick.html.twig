@@ -6,12 +6,21 @@
 	
 	<div class="bg-faded p-4 my-4">
 		<div class="card card-inverse">
-			{% if trick.thumbnail is not null %}<img class="card-img img-fluid w-100" src="{{asset(trick.thumbnail.webPath)}}" alt="{{trick.thumbnail.alt}}">{% endif %}
-			<div class="card-img-overlay bg-overlay">
-				<h2 class="card-title text-shadow text-white text-uppercase mb-0">{{trick.name}}</h2>
+			{% if trick.images is not null %}<img class="card-img img-fluid w-100" src="{{asset(trick.images.0.webUrl)}}" alt="{{trick.images.0.alt}}" />{% endif %}
+			<div class="card-img-overlay bg-overlay text-center"><br/><br/>
+				<h1 class="card-title text-shadow text-white text-uppercase mb-0">{{trick.name}}</h1>
 				<h4 class="text-shadow text-white">{{trick.date|date("F jS \\a\\t g:ia")}}</h4>
-				<p class="lead card-text text-shadow text-white w-50 d-none d-lg-block">{{trick.description}}</p>
 			</div>
+		</div><br/>
+		<div style="d-flex justify-content-start align-content-between flex-wrap">
+			{% for image in trick.images %}
+				<a href="{{asset(image.webUrl)}}" class="" title="{{image.alt}}">
+				<img class="card-img img-fluid w-100 mini-pic" src="{{asset(image.webUrl)}}" alt="{{image.alt}}" />
+				</a>
+			{% endfor %}
+		</div><br/>
+		<div>
+			<p class="lead card-text text-shadow w-50 d-none d-lg-block">{{trick.description}}</p>
 		</div>
 	</div>
 	

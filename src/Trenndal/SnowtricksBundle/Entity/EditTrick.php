@@ -5,6 +5,7 @@ namespace Trenndal\SnowtricksBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Events;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * EditTrick
@@ -34,6 +35,7 @@ class EditTrick
      * @var \DateTime
      *
      * @ORM\Column(name="date", type="datetime")
+     * @Assert\DateTime()
      */
     private $date;
 
@@ -41,6 +43,7 @@ class EditTrick
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=255)
+     * @Assert\NotBlank()
      */
     private $name;
 
@@ -66,6 +69,7 @@ class EditTrick
      * @var string
      *
      * @ORM\Column(name="description", type="text")
+     * @Assert\NotBlank()
      */
     private $description;
 

@@ -3,6 +3,9 @@
 namespace Trenndal\SnowtricksBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Events;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Video
@@ -25,6 +28,7 @@ class Video
      *
      * @ORM\ManyToOne(targetEntity="Trenndal\SnowtricksBundle\Entity\EditTrick", inversedBy="videos")
 	 * @ORM\JoinColumn(nullable=false)
+     * @Assert\NotBlank()
      */
     private $trick;
 
@@ -46,6 +50,7 @@ class Video
      * @var string
      *
      * @ORM\Column(name="src", type="string", length=255)
+     * @Assert\NotBlank()
      */
     private $src;
 

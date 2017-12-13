@@ -14,11 +14,11 @@
 	{% for trick in tricks %}
 		<div class="bg-faded p-4 my-4">
 			<div class="card card-inverse">
-				{% if trick.thumbnail is not null %}<img class="card-img img-fluid w-100" src="{{asset(trick.thumbnail.webPath)}}" alt="{{trick.thumbnail.alt}}">{% endif %}
+				{% if trick.images is not null %}<img class="card-img img-fluid w-100" src="{{asset(trick.images.0.webUrl)}}" alt="{{trick.images.0.alt}}" />{% endif %}
 				<div class="card-img-overlay bg-overlay">
 					<h2 class="card-title text-shadow text-white text-uppercase mb-0">{{trick.name}}</h2>
 					<h4 class="text-shadow text-white">{{trick.date|date("F jS \\a\\t g:ia")}}</h4>
-					<p class="lead card-text text-shadow text-white w-50 d-none d-lg-block">{{trick.description}}</p>
+					<p class="lead card-text text-shadow text-white w-50 d-none d-lg-block">{{ trick.description|length > 50 ? trick.description|slice(0, 50) ~ '...' : trick.description }}</p>
 					<a href="#" class="btn btn-secondary">Read More</a>
 				</div>
 			</div>

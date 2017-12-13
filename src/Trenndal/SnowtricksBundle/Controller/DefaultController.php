@@ -24,7 +24,9 @@ class DefaultController extends Controller
      */
     public function tricksAction()
     {
-        return $this->render('TrenndalSnowtricksBundle:Default:tricks.html.twig',array('tricks'=>array()));
+        $em = $this->getDoctrine()->getManager();
+        $tricks = $em->getRepository('TrenndalSnowtricksBundle:EditTrick')->findAll();
+        return $this->render('TrenndalSnowtricksBundle:Default:tricks.html.twig',array('tricks'=>$tricks));
     }
 	
     /**

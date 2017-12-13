@@ -8,9 +8,10 @@
 		{{ form_start(form, {'attr': {'class': 'form-horizontal'}}) }}
 		{{ form_errors(form) }}
 		
-		{{ form_row(form.author) }}
-		{{ form_row(form.author) }}
-		{{ form_row(form.author) }}
+		{{ form_row(form.name) }}
+		{{ form_row(form.images, {'attr': {'class': 'd-flex justify-content-around align-content-between flex-wrap'}}) }}
+		{{ form_row(form.typeGroup) }}
+		{{ form_row(form.description) }}
 		
 		{{ form_widget(form.save, {'attr': {'class': 'btn btn-secondary'}}) }}
 		

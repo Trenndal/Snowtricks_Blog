@@ -79,7 +79,7 @@
     // La fonction qui ajoute un lien de suppression d'une catégorie
     function addDeleteLink($prototype) {
       // Création du lien
-      var $imgPreview = $('<img src=" " class="" alt="Preview" />');
+      var $imgPreview = $('<img src=" " class="card-img img-fluid w-100 mini-pic" alt="Preview" />');
       var $deleteLink = $('<a href="#" class="btn btn-danger">Supprimer</a>');
 
       // Ajout du lien
