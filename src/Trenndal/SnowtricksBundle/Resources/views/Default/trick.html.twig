@@ -6,7 +6,11 @@
 	
 	<div class="bg-faded p-4 my-4">
 		<div class="card card-inverse">
-			{% if trick.images is not null %}<img class="card-img img-fluid w-100" src="{{asset(trick.images.0.webUrl)}}" alt="{{trick.images.0.alt}}" />{% endif %}
+			{% if trick.images is not null and trick.images is not empty %}
+				<img class="card-img img-fluid w-100" src="{{asset(trick.images.0.webUrl)}}" alt="{{trick.images.0.alt}}" />
+			{% else %}
+				<img class="card-img img-fluid w-100" src="{{asset('web/img/bg2.jpg')}}" alt="snowtrick" />
+			{% endif %}
 			<div class="card-img-overlay bg-overlay text-center"><br/><br/>
 				<h1 class="card-title text-shadow text-white text-uppercase mb-0">{{trick.name}}</h1>
 				<h4 class="text-shadow text-white">{{trick.date|date("F jS \\a\\t g:ia")}}</h4>

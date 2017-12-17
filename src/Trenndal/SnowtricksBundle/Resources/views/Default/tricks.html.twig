@@ -3,19 +3,25 @@
 
 {% block main %}
 	
-	<div class="bg-faded p-4 my-4">
-		<ul class="pagination justify-content-center mb-0">
-			<li class="page-item ">
-				<a class="btn btn-outline-primary btn-lg btn-block" href="/edit/0" role="button">Create new trick</a>
-			</li>
-		</ul>
-	</div>
+	{% if is_granted("ROLE_USER") %}
+		<div class="bg-faded p-4 my-4">
+			<ul class="pagination justify-content-center mb-0">
+				<li class="page-item ">
+					<a class="btn btn-outline-primary btn-lg btn-block" href="/edit/0" role="button">Create new trick</a>
+				</li>
+			</ul>
+		</div>
+	{% endif %}
 	
 	{% for trick in tricks %}
 		<div class="bg-faded p-4 my-4">
 			<div class="card card-inverse">
-				{% if trick.images is not null %}<img class="card-img img-fluid w-100" src="{{asset(trick.images.0.webUrl)}}" alt="{{trick.images.0.alt}}" />{% endif %}
-				<div class="card-img-overlay bg-overlay">
+				{% if trick.images is not null and trick.images is not empty %}
+					<img class="card-img img-fluid w-100" src="{{asset(trick.images.0.webUrl)}}" alt="{{trick.images.0.alt}}" />
+				{% else %}
+					<img class="card-img img-fluid w-100" src="{{asset('web/img/bg2.jpg')}}" alt="snowtrick" />
+				{% endif %}
+			<div class="card-img-overlay bg-overlay">
 					<h2 class="card-title text-shadow text-white text-uppercase mb-0">{{trick.name}}</h2>
 					<h4 class="text-shadow text-white">{{trick.date|date("F jS \\a\\t g:ia")}}</h4>
 					<p class="lead card-text text-shadow text-white w-50 d-none d-lg-block">{{ trick.description|length > 50 ? trick.description|slice(0, 50) ~ '...' : trick.description }}</p>

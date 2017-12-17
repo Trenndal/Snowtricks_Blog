@@ -69,6 +69,14 @@ class Video
     private $alt;
 
 
+    /**
+     * @Assert\File(
+     *     maxSize = "30M",
+     *     mimeTypes = {"video/mpeg", "video/ogg", "video/mp4", "video/quicktime", "video/x-ms-wmv", "video/x-msvideo", "video/x-flv"},
+     *     maxSizeMessage = "Please upload videos under 30Mo of size ",
+     *     mimeTypesMessage = "Please upload valid videos "
+     * )
+     */
     private $file;
 
 

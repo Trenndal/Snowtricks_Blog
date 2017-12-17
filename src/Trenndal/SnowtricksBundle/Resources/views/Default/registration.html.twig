@@ -4,24 +4,44 @@
 {% block main %}
 
 	
-	<div class="bg-faded p-4 my-4">
-		{% if error %}
-			<div class="alert alert-danger">{{ error.message }}</div>
-		{% endif %}
-	</div><br />
+	{% for error in errors %}
+		<div class="bg-faded p-4 my-4">
+			<div class="alert alert-danger">{{ error }}</div>
+		</div><br />
+	{% endfor %}
 
 	<div class="bg-faded p-4 my-4">
-		<h2>Create your acount</h2>
-		<form action="{{ path('login_check') }}" method="post">
-			<label for="username">Login :</label>
-			<input type="text" id="username" name="_username" value="{{ last_username }}" />
-			<label for="password">Password :</label>
-			<input type="password" id="password" name="_password" />
-			<label for="email">eMail :</label>
-			<input type="email" id="email" name="_email" />
-			<br />
-			<input type="submit" value="Create" />
-		</form>
+		{% if user_name is not null %}
+			<h2>Modify your account : {{user_name}}</h2>
+		{% else %}
+			<h2>Create your account</h2>
+		{% endif %}
+		{{ form_start(form, {'attr': {'class': 'form-horizontal'}}) }}
+		{{ form_errors(form) }}
+			<div class="row">
+				{% if user_name is not null %}
+					<div class="form-group col-lg-12" style="visibility:hidden;">
+						{{ form_row(form.username, {'attr': {'class': 'form-control'}}) }}
+					</div>
+				{% else %}
+					<div class="form-group col-lg-12">
+						{{ form_row(form.username, {'attr': {'class': 'form-control'}}) }}
+					</div>
+				{% endif %}
+				<div class="form-group col-lg-12">
+					{{ form_row(form.password, {'attr': {'class': 'form-control'}}) }}
+				</div>
+				<div class="form-group col-lg-12">
+					{{ form_row(form.email, {'attr': {'class': 'form-control'}}) }}
+				</div>
+				<br />
+				<div class="form-group col-lg-12">
+					{{ form_widget(form.save, {'attr': {'class': 'btn btn-secondary'}}) }}
+				</div>
+			</div>
+		{{ form_rest(form) }}
+		
+		{{ form_end(form) }}
 	</div>
 	
 	

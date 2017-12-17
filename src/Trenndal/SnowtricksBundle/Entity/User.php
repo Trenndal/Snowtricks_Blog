@@ -4,6 +4,7 @@ namespace Trenndal\SnowtricksBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * User
@@ -13,6 +14,11 @@ use Symfony\Component\Security\Core\User\UserInterface;
  */
 class User implements UserInterface
 {
+	public function __construct() {
+		$this->salt = "";
+		$this->roles = array('ROLE_USER');
+	}
+
     /**
      * @var int
      *
@@ -26,6 +32,7 @@ class User implements UserInterface
      * @var string
      *
      * @ORM\Column(name="username", type="string", length=255, unique=true)
+     * @Assert\NotBlank()
      */
     private $username;
 
@@ -33,8 +40,20 @@ class User implements UserInterface
      * @var string
      *
      * @ORM\Column(name="password", type="string", length=255)
+     * @Assert\NotBlank()
      */
     private $password;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="email", type="string", length=255)
+     * @Assert\Email(
+     *     message = "The email '{{ value }}' is not a valid email.",
+     *     checkMX = true
+     * )
+     */
+    private $email;
 
     /**
      * @var string
@@ -47,6 +66,10 @@ class User implements UserInterface
      * @var array
      *
      * @ORM\Column(name="roles", type="array")
+     * @Assert\Count(
+     *      min = 1,
+     *      minMessage = "You must specify at least one role"
+     * )
      */
     private $roles;
 
@@ -158,5 +181,29 @@ class User implements UserInterface
     public function getRoles()
     {
         return $this->roles;
+    }
+
+    /**
+     * Set email
+     *
+     * @param string $email
+     *
+     * @return User
+     */
+    public function setEmail($email)
+    {
+        $this->email = $email;
+
+        return $this;
+    }
+
+    /**
+     * Get email
+     *
+     * @return string
+     */
+    public function getEmail()
+    {
+        return $this->email;
     }
 }

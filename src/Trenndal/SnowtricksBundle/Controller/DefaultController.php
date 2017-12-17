@@ -5,6 +5,7 @@ namespace Trenndal\SnowtricksBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 use Trenndal\SnowtricksBundle\Entity\EditTrick;
 use Trenndal\SnowtricksBundle\Form\EditTrickType;
@@ -12,7 +13,7 @@ use Trenndal\SnowtricksBundle\Form\EditTrickType;
 class DefaultController extends Controller
 {
     /**
-     * @Route("/")
+     * @Route("/", name="home")
      */
     public function indexAction()
     {
@@ -46,17 +47,21 @@ class DefaultController extends Controller
 	
     /**
      * @Route("/edit/{slug}")
+     * @Security("has_role('ROLE_USER')")
      */
     public function editAction($slug, Request $request)
     {
 		$em = $this->getDoctrine()->getManager();
 		if($slug>0){
 			$trick = $em->getRepository('TrenndalSnowtricksBundle:EditTrick')->find($slug);
+			$title=$trick->getName();
 		} else {
+			$title='New snowtrick';
 			$trick =  new EditTrick();
 		}
 		if (null === $trick) {
-			throw new NotFoundHttpException("L'annonce d'id ".$slug." n'existe pas.");
+			$request->getSession()->getFlashBag()->add('notice', 'Trick not found.');
+			return $this->redirect('/tricks/');
 		}
 		
 		$formBuilder = $this->get('form.factory')->createBuilder(EditTrickType::class, $trick);
@@ -69,11 +74,10 @@ class DefaultController extends Controller
 				$em->persist($trick);
 				foreach($trick->getImages() as $image){ $image->setTrick($trick);}
 				$em->flush();
-				$request->getSession()->getFlashBag()->add('notice', 'Annonce bien enregistrée.');
 				return $this->redirect('/trick/'.$trick->getId());
 			}
 		}
 		
-        return $this->render('TrenndalSnowtricksBundle:Default:edit.html.twig',array('title'=>$slug, 'form' => $form->createView()));
+        return $this->render('TrenndalSnowtricksBundle:Default:edit.html.twig',array('title'=>$title, 'form' => $form->createView()));
     }
 }

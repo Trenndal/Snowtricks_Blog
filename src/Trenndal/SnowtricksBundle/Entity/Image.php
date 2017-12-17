@@ -51,6 +51,14 @@ class Image
     private $alt;
 
 
+    /**
+     * @Assert\File(
+     *     maxSize = "3M",
+     *     mimeTypes = {"image/bmp", "image/jpeg", "image/png", "image/gif", "image/jpg"},
+     *     maxSizeMessage = "Please upload images under 3Mo of size ",
+     *     mimeTypesMessage = "Please upload valid images "
+     * )
+     */
     private $file;
 
 
