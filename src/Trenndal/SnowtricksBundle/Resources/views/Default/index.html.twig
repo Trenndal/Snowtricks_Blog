@@ -133,3 +133,8 @@
 		  </div>
 
 		{% endblock %}
+
+		{% block javascripts %}
+			{{ parent() }}
+			<script src="{{asset('web/js/grayscale.map.js')}}"></script>
+		{% endblock %}

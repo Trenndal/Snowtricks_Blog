@@ -20,7 +20,7 @@ class EditTrickType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('name')->add('typeGroup')->add('description')->add('save', SubmitType::class)->add('images', CollectionType::class, array('entry_type'=>ImageType::class, 'allow_add'=>true, 'allow_delete'=>true));
+        $builder->add('name')->add('typeGroup')->add('description')->add('save', SubmitType::class)->add('images', CollectionType::class, array('entry_type'=>ImageType::class, 'allow_add'=>true, 'allow_delete'=>true))->add('videos', CollectionType::class, array('entry_type'=>ImageType::class, 'allow_add'=>true, 'allow_delete'=>true));
     }
     
     /**

@@ -12,6 +12,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @ORM\Table(name="video")
  * @ORM\Entity(repositoryClass="Trenndal\SnowtricksBundle\Repository\VideoRepository")
+ * @ORM\HasLifecycleCallbacks
  */
 class Video
 {
@@ -33,26 +34,14 @@ class Video
     private $trick;
 
     /**
-     * @var int
-     *
-     * @ORM\Column(name="width", type="integer")
-     */
-    private $width;
-
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="height", type="integer")
-     */
-    private $height;
-
-    /**
      * @var string
      *
-     * @ORM\Column(name="src", type="string", length=255)
+     * @ORM\Column(name="url", type="string", length=255)
      * @Assert\NotBlank()
      */
-    private $src;
+    private $url;
+
+    private $tempUrl;
 
     /**
      * @var string
@@ -91,6 +80,7 @@ class Video
         if (null === $this->file) { return; }
         $this->url=$this->file->guessExtension();
         $this->alt=$this->file->getClientOriginalName();
+        $this->typeVideo='video/'.$this->file->guessExtension();
     }
 
     public function getWebUrl()
@@ -130,6 +120,20 @@ class Video
     }
 
     /**
+     * Set id
+     *
+     * @param integer $id
+     *
+     * @return Image
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+
+        return $this;
+    }
+
+    /**
      * Get id
      *
      * @return int
@@ -140,75 +144,27 @@ class Video
     }
 
     /**
-     * Set width
+     * Set url
      *
-     * @param integer $width
+     * @param string $url
      *
      * @return Video
      */
-    public function setWidth($width)
+    public function setUrl($url)
     {
-        $this->width = $width;
+        $this->url = $url;
 
         return $this;
     }
 
     /**
-     * Get width
-     *
-     * @return int
-     */
-    public function getWidth()
-    {
-        return $this->width;
-    }
-
-    /**
-     * Set height
-     *
-     * @param integer $height
-     *
-     * @return Video
-     */
-    public function setHeight($height)
-    {
-        $this->height = $height;
-
-        return $this;
-    }
-
-    /**
-     * Get height
-     *
-     * @return int
-     */
-    public function getHeight()
-    {
-        return $this->height;
-    }
-
-    /**
-     * Set src
-     *
-     * @param string $src
-     *
-     * @return Video
-     */
-    public function setSrc($src)
-    {
-        $this->src = $src;
-
-        return $this;
-    }
-
-    /**
-     * Get src
+     * Get url
      *
      * @return string
      */
-    public function getSrc()
+    public function getUrl()
     {
-        return $this->src;
+        return $this->url;
     }
 
     /**
@@ -258,8 +214,6 @@ class Video
     {
         return $this->alt;
     }
-
-
 
     /**
      * Set trick

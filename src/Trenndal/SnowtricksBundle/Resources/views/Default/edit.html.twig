@@ -10,6 +10,10 @@
 		
 		{{ form_row(form.name) }}
 		{{ form_row(form.images, {'attr': {'class': 'd-flex justify-content-around align-content-between flex-wrap'}}) }}
+		<a href="#" id="add_image" class="btn btn-default">Add Image</a>
+		</br>
+		{{ form_row(form.videos, {'attr': {'class': 'd-flex justify-content-around align-content-between flex-wrap'}}) }}
+		<a  href="#" id="add_video" class="btn btn-default">Add Video</a>
 		{{ form_row(form.typeGroup) }}
 		{{ form_row(form.description) }}
 		
@@ -18,17 +22,11 @@
 		{{ form_rest(form) }}
 		
 		{{ form_end(form) }}
-		<ul class="pagination justify-content-center mb-0">
-			<li class="page-item disabled">
-				<a class="page-link" href="#">&larr; Older</a>
-			</li>
-			<li class="page-item disabled">
-				<a class="page-link" href="#">1</a>
-			</li>
-			<li class="page-item disabled">
-				<a class="page-link" href="#">Newer &rarr;</a>
-			</li>
-		</ul>
 	</div>
 {% endblock %}
 
+{% block javascripts %}
+	{{ parent() }}
+	<script src="{{asset('web/js/edition.js')}}"></script>
+	<script src="{{asset('web/js/bootstrap-filestyle.min.js')}}"></script>
+{% endblock %}
