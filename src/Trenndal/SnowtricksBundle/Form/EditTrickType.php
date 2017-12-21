@@ -12,6 +12,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 class EditTrickType extends AbstractType
 {
@@ -20,7 +21,8 @@ class EditTrickType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('name')->add('typeGroup')->add('description')->add('save', SubmitType::class)->add('images', CollectionType::class, array('entry_type'=>ImageType::class, 'allow_add'=>true, 'allow_delete'=>true))->add('videos', CollectionType::class, array('entry_type'=>ImageType::class, 'allow_add'=>true, 'allow_delete'=>true));
+	$groups=array('-- Trick group ? --' => null,'Straight airs' => 1,'Grabs' => 2,'Spins' => 3,'Flips and Inverted Rotations' => 4,'Inverted Hand Plants' => 5,'Slides' => 6,'Stalls' => 7,'Tweaks and variations' => 8);
+	$builder->add('name')->add('typeGroup', ChoiceType::class, array('choices'  => $groups))->add('description')->add('save', SubmitType::class)->add('images', CollectionType::class, array('entry_type'=>ImageType::class, 'allow_add'=>true, 'allow_delete'=>true))->add('videos', CollectionType::class, array('entry_type'=>ImageType::class, 'allow_add'=>true, 'allow_delete'=>true));
     }
     
     /**

@@ -9,7 +9,7 @@
 
     $('#add_image').click(function(e) {
 
-      addCategory($container);redobfs();
+      addCategory($container);//redobfs();
 
       e.preventDefault(); 
       return false;
@@ -55,18 +55,18 @@
       addCategory($container);
     } else {
       $container.children('div').each(function() {
-        addDeleteLink($(this));
+        addDeleteLink($(this),true);
       });
     }
     if (index2 == 0) {
       addCategory2($container2);
     } else {
       $container2.children('div').each(function() {
-        addDeleteLink2($(this));
+        addDeleteLink2($(this),true);
       });
     }
 
-    function addCategory($container) {
+    function addCategory($container, old=false) {
       var template = $container.attr('data-prototype')
         .replace(/__name__label__/g, ' ')
         .replace(/__name__/g,        (index+1))
@@ -74,7 +74,7 @@
 
       var $prototype = $(template);
 
-      addDeleteLink($prototype);
+      addDeleteLink($prototype,old);
 
       $container.append($prototype);
 
@@ -97,24 +97,28 @@
     }
 	
 	
-    function addDeleteLink($prototype) {
+    function addDeleteLink($prototype,old=false) {
 		
-      var $imgPreview = $('<img src="../img/bg.jpg" class="card-img img-fluid w-100 mini-pic" alt="Preview" />');
-      var $deleteLink = $('<div class="positioner"><a href="#" class="btn btn-danger pull-right" ><i class="icon-2x icon-trash"></i></a></div>');
+		if(old){
+			var $imgPreview = $('<img src="'+ $prototype.attr('img-data') +'" class="card-img img-fluid w-100 mini-pic" alt="Preview" />');
+		}
+		else{var $imgPreview = $('<img src="../img/bg.jpg" class="card-img img-fluid w-100 mini-pic" alt="Preview" />');}
+		var $deleteLink = $('<div class="positioner"><a href="#" class="btn btn-danger pull-right" ><i class="icon-2x icon-trash"></i></a></div>');
 
-	  var upfile = $prototype.children('DIV').first().children('.form-group').first().children('input').first();
-	  $prototype.children('DIV').first().children('.form-group').first().attr('class','form-group positioner2');
-      upfile.attr('class','filestyle');
-      upfile.attr('data-input','false');
-      upfile.attr('data-iconName','icon-2x icon-pencil');
-      upfile.attr('data-buttonText',' ');
-	  //upfile.filestyle();
-	  $prototype.children('DIV').first().children('.form-group').first().children('label').first().attr('style','display:none;');
-	  $prototype.children('label').first().attr('style','display:none;');
+		var upfile = $prototype.children('DIV').first().children('.form-group').first().children('input').first();
+		$prototype.children('DIV').first().children('.form-group').first().attr('class','form-group positioner2');
+		upfile.attr('class','filestyle');
+		upfile.attr('data-input','false');
+		upfile.attr('data-iconName','icon-2x icon-pencil');
+		upfile.attr('data-buttonText',' ');
+		if(old){ upfile.removeAttr('required'); }
 	  
-      $prototype.append($deleteLink);
-      $prototype.append($imgPreview);
-	  $prototype.attr('class','form-group jqtarget');
+		$prototype.children('DIV').first().children('.form-group').first().children('label').first().attr('style','display:none;');
+		$prototype.children('label').first().attr('style','display:none;');
+		
+		$prototype.append($deleteLink);
+		$prototype.append($imgPreview);
+		$prototype.attr('class','form-group jqtarget');
 
       $deleteLink.click(function(e) {
         $prototype.remove();
@@ -124,7 +128,7 @@
       });
     }
 	
-    function addDeleteLink2($prototype) {
+    function addDeleteLink2($prototype,old=false) {
 		
       var $imgPreview = $('<video src=" " class="" alt="Video Preview" width="320" height="240" controls></video>');
       var $deleteLink = $('<a href="#" class="btn btn-danger">Supprimer</a>');
