@@ -15,6 +15,10 @@
 				<h1 class="card-title text-shadow text-white text-uppercase mb-0">{{trick.name}}</h1>
 				<h4 class="text-shadow text-white">{{trick.date|date("F jS \\a\\t g:ia")}}</h4>
 			</div>
+			{% if is_granted('ROLE_USER') %}
+				<div class="positioner"><a href="{{ path('delete_trick', {slug:trick.id ,token: csrf_token('intention')}) }}" class="btn btn-danger pull-right" onclick="return confirm('Are you absolutely sure you want to delete?');"><i class="icon-2x icon-trash"></i></a></div>
+				<div class="positioner2"><a href="{{'/edit/'~ trick.id}}" class="btn btn-success pull-left" ><i class="icon-2x icon-pencil"></i></a></div>
+			{% endif %}
 		</div><br/>
 		<div style="d-flex justify-content-start align-content-between flex-wrap">
 			{% for image in trick.images %}
@@ -24,7 +28,7 @@
 			{% endfor %}
 		</div><br/>
 		<div>
-			<p class="lead card-text text-shadow w-50 d-none d-lg-block">{{trick.description}}</p>
+			<p class="lead card-text text-shadow w-100 d-none d-lg-block">{{trick.description}}</p>
 		</div>
 	</div>
 	

@@ -42,8 +42,23 @@ class DefaultController extends Controller
 		}
 		
 		
-        return $this->render('TrenndalSnowtricksBundle:Default:trick.html.twig',array('title'=>$trick->getName(), 'trick'=>$trick));
+        return $this->render('TrenndalSnowtricksBundle:Default:trick.html.twig',array('title'=>$trick->getName(), 'trick'=>$trick ));
     }
+	
+    /**
+     * @Route("/delete/{slug}/{token}", name="delete_trick")
+     * @Security("has_role('ROLE_USER')")
+     */
+    public function deleteAction($slug, $token, Request $request)
+	{
+		$em = $this->getDoctrine()->getManager();
+		$trick = $em->getRepository('TrenndalSnowtricksBundle:EditTrick')->find($slug);
+		if($trick and $this->isCsrfTokenValid('intention', $token)) {
+			$em->remove($trick);
+			$em->flush();
+		}
+		return $this->redirect('/tricks/');
+	}
 	
     /**
      * @Route("/edit/{slug}")
@@ -54,7 +69,7 @@ class DefaultController extends Controller
 		$em = $this->getDoctrine()->getManager();
 		if($slug>0){
 			$trick = $em->getRepository('TrenndalSnowtricksBundle:EditTrick')->find($slug);
-			$title=$trick->getName();
+			if (null !== $trick) $title=$trick->getName();
 		} else {
 			$title='New snowtrick';
 			$trick =  new EditTrick();
@@ -78,6 +93,6 @@ class DefaultController extends Controller
 			}
 		}
 		
-        return $this->render('TrenndalSnowtricksBundle:Default:edit.html.twig',array('title'=>$title, 'form' => $form->createView()));
+        return $this->render('TrenndalSnowtricksBundle:Default:edit.html.twig',array('title'=>$title, 'form' => $form->createView(),'trick'=>$trick));
     }
 }
