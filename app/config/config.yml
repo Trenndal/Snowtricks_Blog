@@ -38,6 +38,8 @@ framework:
 twig:
     debug: '%kernel.debug%'
     strict_variables: '%kernel.debug%'
+    form_themes:
+        - 'bootstrap_3_layout.html.twig'
 
 # Doctrine Configuration
 doctrine:
@@ -64,7 +66,10 @@ doctrine:
 # Swiftmailer Configuration
 swiftmailer:
     transport: '%mailer_transport%'
+    encryption: '%mailer_encryption%'
     host: '%mailer_host%'
     username: '%mailer_user%'
     password: '%mailer_password%'
+    port: '%mailer_port%'
+    auth_mode: login
     spool: { type: memory }

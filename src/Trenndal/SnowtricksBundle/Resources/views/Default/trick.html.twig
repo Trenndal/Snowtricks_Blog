@@ -1,0 +1,65 @@
+{# src/Trenndal/SnowtricksBundle/Resources/views/Default/trick.html.twig #}
+{% extends 'templates/page.html.twig' %}
+
+{% block main %}
+
+	
+	<div class="bg-faded p-4 my-4">
+		<div class="card card-inverse">
+			{% if trick.images is not null and trick.images is not empty %}
+				<img class="card-img img-fluid w-100" src="{{asset(trick.images.0.webUrl)}}" alt="{{trick.images.0.alt}}" />
+			{% else %}
+				<img class="card-img img-fluid w-100" src="{{asset('web/img/bg2.jpg')}}" alt="snowtrick" />
+			{% endif %}
+			<div class="card-img-overlay bg-overlay text-center"><br/><br/>
+				<h1 class="card-title text-shadow text-white text-uppercase mb-0">{{trick.name}}</h1>
+				<h4 class="text-shadow text-white">{{trick.date|date("F jS \\a\\t g:ia")}}</h4>
+			</div>
+			{% if is_granted('ROLE_USER') %}
+				<div class="positioner"><a href="{{ path('delete_trick', {slug:trick.id ,token: csrf_token('intention')}) }}" class="btn btn-danger pull-right" onclick="return confirm('Are you absolutely sure you want to delete?');"><i class="icon-2x icon-trash"></i></a></div>
+				<div class="positioner2"><a href="{{'/edit/'~ trick.id}}" class="btn btn-success pull-left" ><i class="icon-2x icon-pencil"></i></a></div>
+			{% endif %}
+		</div><br/>
+		<div style="d-flex justify-content-start align-content-between flex-wrap">
+			{% for image in trick.images %}
+				<a href="{{asset(image.webUrl)}}" class="" title="{{image.alt}}">
+				<img class="card-img img-fluid w-100 mini-pic" src="{{asset(image.webUrl)}}" alt="{{image.alt}}" />
+				</a>
+			{% endfor %}
+		</div><br/>
+		<div>
+			<p class="lead card-text text-shadow w-100 d-none d-lg-block">{{trick.description}}</p>
+		</div>
+	</div>
+	
+	<div class="bg-faded p-4 my-4">
+		<h2 class="card-title text-shadow text-uppercase mb-0">Comments</h2>
+		{% for comment in trick.comments %}
+			<div class="row">
+				<div class="col-3">
+					<h4 class="card-title text-shadow text-uppercase mb-0">{{comment.author.username}}</h4>
+					<img class="lead card-text text-shadow w-100 d-none d-lg-block" src="{{asset(comment.author.webUrl)}}" alt="pic" />
+				</div>
+				<div class="col-9">
+					<h5 class="card-title text-shadow text-uppercase mb-0">{{comment.date|date("F jS \\a\\t g:ia")}}</h5>
+					<p class="card-text text-shadow w-100 d-none d-lg-block">{{comment.text}}</p>
+				</div>
+			</div>
+		{% else %}
+			<div class="row">
+				<div class="col-3">
+				</div>
+				<div class="col-9">
+					<p class="card-text text-shadow w-100 d-none d-lg-block"></br>There are no comments.</p>
+				</div>
+			</div>
+		{% endfor %}
+	</div>
+	{% if is_granted('ROLE_USER') %}
+		<div class="bg-faded p-4 my-4">
+			<h2 class="card-title text-shadow text-uppercase mb-0">Add your comment</h2>
+			{{form(form)}}
+		</div>
+	{% endif %}
+{% endblock %}
+

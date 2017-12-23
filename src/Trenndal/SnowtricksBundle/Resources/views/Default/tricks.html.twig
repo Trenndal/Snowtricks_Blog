@@ -1,0 +1,57 @@
+{# src/Trenndal/SnowtricksBundle/Resources/views/Default/tricks.html.twig #}
+{% extends 'templates/page.html.twig' %}
+
+{% block main %}
+	
+	{% if is_granted("ROLE_USER") %}
+		<div class="bg-faded p-4 my-4">
+			<ul class="pagination justify-content-center mb-0">
+				<li class="page-item ">
+					<a class="btn btn-outline-primary btn-lg btn-block" href="/edit/0" role="button">Create new trick</a>
+				</li>
+			</ul>
+		</div>
+	{% endif %}
+	
+	{% for trick in tricks %}
+		<div class="bg-faded p-4 my-4">
+			<div class="card card-inverse">
+				{% if trick.images is not null and trick.images is not empty %}
+					<img class="card-img img-fluid w-100" src="{{asset(trick.images.0.webUrl)}}" alt="{{trick.images.0.alt}}" />
+				{% else %}
+					<img class="card-img img-fluid w-100" src="{{asset('web/img/bg2.jpg')}}" alt="snowtrick" />
+				{% endif %}
+				<div class="card-img-overlay bg-overlay"></br></br>
+					<h2 class="card-title text-shadow text-white text-uppercase mb-0">{{trick.name}}</h2>
+					<h4 class="text-shadow text-white">{{trick.date|date("F jS \\a\\t g:ia")}}</h4></br></br>
+					<p class="text-center lead card-text text-shadow text-white w-100 d-none d-lg-block">{{ trick.description|length > 50 ? trick.description|slice(0, 50) ~ '...' : trick.description }}</br></br>
+					<a href="{{'/trick/'~ trick.id}}" class="btn btn-secondary">Read More</a></p>
+				</div>
+				{% if is_granted('ROLE_USER') %}
+					<div class="positioner"><a href="{{ path('delete_trick', {slug:trick.id ,token: csrf_token('intention')}) }}" class="btn btn-danger pull-right" onclick="return confirm('Are you absolutely sure you want to delete?');"><i class="icon-2x icon-trash"></i></a></div>
+					<div class="positioner2"><a href="{{'/edit/'~ trick.id}}" class="btn btn-success pull-left" ><i class="icon-2x icon-pencil"></i></a></div>
+				{% endif %}
+			</div>
+		</div>
+	{% else %}
+		<div class="bg-faded p-4 my-4">
+			<p class="pagination justify-content-center mb-0">No tricks found</p>
+		</div>
+	{% endfor %}
+	
+	<!-- Pagination -->
+	<div class="bg-faded p-4 my-4">
+		<ul class="pagination justify-content-center mb-0">
+			<li class="page-item disabled">
+				<a class="page-link" href="#">&larr; Older</a>
+			</li>
+			<li class="page-item disabled">
+				<a class="page-link" href="#">1</a>
+			</li>
+			<li class="page-item disabled">
+				<a class="page-link" href="#">Newer &rarr;</a>
+			</li>
+		</ul>
+	</div>
+{% endblock %}
+
