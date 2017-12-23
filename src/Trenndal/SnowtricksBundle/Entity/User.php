@@ -3,19 +3,24 @@
 namespace Trenndal\SnowtricksBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Events;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
  * User
  *
  * @ORM\Table(name="user")
  * @ORM\Entity(repositoryClass="Trenndal\SnowtricksBundle\Repository\UserRepository")
+ * @ORM\HasLifecycleCallbacks
+ * 
  */
 class User implements UserInterface
 {
 	public function __construct() {
 		$this->salt = "";
+		$this->file = null;
 		$this->roles = array('ROLE_USER');
 	}
 
@@ -72,6 +77,90 @@ class User implements UserInterface
      * )
      */
     private $roles;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Trenndal\SnowtricksBundle\Entity\Comment", mappedBy="trick")
+     */
+    private $comments;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="url", type="string", length=255)
+     * @Assert\NotBlank()
+     */
+    private $url;
+
+    private $tempUrl;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="alt", type="string", length=255, nullable=true)
+     */
+    private $alt;
+
+
+    /**
+     * @Assert\File(
+     *     maxSize = "3M",
+     *     mimeTypes = {"image/bmp", "image/jpeg", "image/png", "image/gif", "image/jpg"},
+     *     maxSizeMessage = "Please upload images under 3Mo of size ",
+     *     mimeTypesMessage = "Please upload valid images "
+     * )
+     */
+    private $file;
+
+
+    public function getFile()
+    {
+        return $this->file;
+    }
+
+    public function setFile(UploadedFile $file = null)
+    {
+        $this->file = $file;
+        if (null === $this->file) { return; }
+        $this->url=$this->file->guessExtension();
+        $this->alt=$this->file->getClientOriginalName();
+    }
+
+    public function getWebUrl()
+    {
+        return "web/uploads/images/A".$this->id.'.'.$this->url;
+    }
+
+
+    /**
+     * @ORM\PostPersist()
+     * @ORM\PostUpdate()
+     */
+    public function update() { 
+        if (null === $this->file) { return; }
+        $this->preRemoveFile(); $this->removeFile();
+        
+        $this->file->move(__DIR__."/../../../../web/uploads/images/",'A'.$this->id.'.'.$this->file->guessExtension());
+        
+    }
+
+    /**
+     * @ORM\PreRemove()
+     */
+    public function preRemoveFile() {
+        
+        $this->tempUrl = __DIR__."/../../../../".$this->getWebUrl();
+        
+    }
+
+    /**
+     * @ORM\PostRemove()
+     */
+    public function removeFile() {
+        
+        if (file_exists($this->tempUrl)) { unlink($this->tempUrl); }
+        
+    }
+
 
 	public function eraseCredentials(){
 		return $this;
@@ -205,5 +294,87 @@ class User implements UserInterface
     public function getEmail()
     {
         return $this->email;
+    }
+
+    /**
+     * Set url
+     *
+     * @param string $url
+     *
+     * @return User
+     */
+    public function setUrl($url)
+    {
+        $this->url = $url;
+
+        return $this;
+    }
+
+    /**
+     * Get url
+     *
+     * @return string
+     */
+    public function getUrl()
+    {
+        return $this->url;
+    }
+
+    /**
+     * Set alt
+     *
+     * @param string $alt
+     *
+     * @return User
+     */
+    public function setAlt($alt)
+    {
+        $this->alt = $alt;
+
+        return $this;
+    }
+
+    /**
+     * Get alt
+     *
+     * @return string
+     */
+    public function getAlt()
+    {
+        return $this->alt;
+    }
+
+    /**
+     * Add comment
+     *
+     * @param \Trenndal\SnowtricksBundle\Entity\Comment $comment
+     *
+     * @return User
+     */
+    public function addComment(\Trenndal\SnowtricksBundle\Entity\Comment $comment)
+    {
+        $this->comments[] = $comment;
+
+        return $this;
+    }
+
+    /**
+     * Remove comment
+     *
+     * @param \Trenndal\SnowtricksBundle\Entity\Comment $comment
+     */
+    public function removeComment(\Trenndal\SnowtricksBundle\Entity\Comment $comment)
+    {
+        $this->comments->removeElement($comment);
+    }
+
+    /**
+     * Get comments
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getComments()
+    {
+        return $this->comments;
     }
 }

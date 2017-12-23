@@ -32,6 +32,34 @@
 		</div>
 	</div>
 	
-	
+	<div class="bg-faded p-4 my-4">
+		<h2 class="card-title text-shadow text-uppercase mb-0">Comments</h2>
+		{% for comment in trick.comments %}
+			<div class="row">
+				<div class="col-3">
+					<h4 class="card-title text-shadow text-uppercase mb-0">{{comment.author.username}}</h4>
+					<img class="lead card-text text-shadow w-100 d-none d-lg-block" src="{{asset(comment.author.webUrl)}}" alt="pic" />
+				</div>
+				<div class="col-9">
+					<h5 class="card-title text-shadow text-uppercase mb-0">{{comment.date|date("F jS \\a\\t g:ia")}}</h5>
+					<p class="card-text text-shadow w-100 d-none d-lg-block">{{comment.text}}</p>
+				</div>
+			</div>
+		{% else %}
+			<div class="row">
+				<div class="col-3">
+				</div>
+				<div class="col-9">
+					<p class="card-text text-shadow w-100 d-none d-lg-block"></br>There are no comments.</p>
+				</div>
+			</div>
+		{% endfor %}
+	</div>
+	{% if is_granted('ROLE_USER') %}
+		<div class="bg-faded p-4 my-4">
+			<h2 class="card-title text-shadow text-uppercase mb-0">Add your comment</h2>
+			{{form(form)}}
+		</div>
+	{% endif %}
 {% endblock %}
 
