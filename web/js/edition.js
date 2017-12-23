@@ -9,7 +9,7 @@
 
     $('#add_image').click(function(e) {
 
-      addCategory($container);//redobfs();
+      addCategory($container);redobfs();
 
       e.preventDefault(); 
       return false;
@@ -17,7 +17,7 @@
 
     $('#add_video').click(function(e) {
 
-      addCategory2($container2);
+      addCategory2($container2);redobfs();
 
       e.preventDefault(); 
       return false;
@@ -31,20 +31,23 @@
 		var readers = [];
 		for(var i= 1; i < base.children('.jqtarget').length+1; i++){ 
 			imgTarget = base.children('.jqtarget:nth-child('+i+')');
-			inp = imgTarget.children('DIV').first().children().first().children('input')[0];
-			if (inp.files && inp.files[0]) { 
-				readers.push(new FileReader());
+			inp = imgTarget.children('DIV').first().children().first().children('input')[0]; 
+			readers.push(new FileReader());
+			if (inp.files && inp.files[0]) {
 				if(imgTarget.children('img').length==0){ imgTarget=imgTarget.children('video').first();}
 				else{ imgTarget=imgTarget.children('img').first(); }
-				
-				(function (_picTarget) {
-					readers[i-1].addEventListener("load", function assignImageSrc(event) {
-						var picFile = event.target.result;
-						_picTarget.attr('src', picFile);
-						this.removeEventListener("load", assignImageSrc);
-					}, false);
-				})(imgTarget);
-				readers[i-1].readAsDataURL(inp.files[0]);
+				try{
+					(function (_picTarget) {
+						readers[i-1].addEventListener("load", function assignImageSrc(event) {
+							var picFile = event.target.result;
+							_picTarget.attr('src', picFile);
+							this.removeEventListener("load", assignImageSrc);
+						}, false);
+					})(imgTarget);
+						readers[i-1].readAsDataURL(inp.files[0]);
+				}catch(e) {
+					imgTarget;
+				} 
 			}
 		}
       } 
@@ -102,7 +105,7 @@
 		if(old){
 			var $imgPreview = $('<img src="'+ $prototype.attr('img-data') +'" class="card-img img-fluid w-100 mini-pic" alt="Preview" />');
 		}
-		else{var $imgPreview = $('<img src="../img/bg.jpg" class="card-img img-fluid w-100 mini-pic" alt="Preview" />');}
+		else{var $imgPreview = $('<img src="../web/img/bg.jpg" class="card-img img-fluid w-100 mini-pic" alt="Preview" />');}
 		var $deleteLink = $('<div class="positioner"><a href="#" class="btn btn-danger pull-right" ><i class="icon-2x icon-trash"></i></a></div>');
 
 		var upfile = $prototype.children('DIV').first().children('.form-group').first().children('input').first();
@@ -130,13 +133,26 @@
 	
     function addDeleteLink2($prototype,old=false) {
 		
-      var $imgPreview = $('<video src=" " class="" alt="Video Preview" width="320" height="240" controls></video>');
-      var $deleteLink = $('<a href="#" class="btn btn-danger">Supprimer</a>');
+    if(old){
+			var $imgPreview = $('<video src="'+ $prototype.attr('video-data') +'" alt="Preview" width="320" height="240" controls />');
+		}
+		else{var $imgPreview = $('<video src=" " alt="Preview" width="320" height="240" controls />');}
+		var $deleteLink = $('<div class="positioner"><a href="#" class="btn btn-danger pull-right" ><i class="icon-2x icon-trash"></i></a></div>');
 
-      $prototype.append($imgPreview);
-      $prototype.append($deleteLink);
-	  $prototype.attr('style','background-color:gray;');
-	  $prototype.attr('class','form-group jqtarget');
+		var upfile = $prototype.children('DIV').first().children('.form-group').first().children('input').first();
+		$prototype.children('DIV').first().children('.form-group').first().attr('class','form-group positioner2');
+		upfile.attr('class','filestyle');
+		upfile.attr('data-input','false');
+		upfile.attr('data-iconName','icon-2x icon-pencil');
+		upfile.attr('data-buttonText',' ');
+		if(old){ upfile.removeAttr('required'); }
+	  
+		$prototype.children('DIV').first().children('.form-group').first().children('label').first().attr('style','display:none;');
+		$prototype.children('label').first().attr('style','display:none;');
+		
+		$prototype.append($deleteLink);
+		$prototype.append($imgPreview);
+		$prototype.attr('class','form-group jqtarget');
 
       $deleteLink.click(function(e) {
         $prototype.remove();

@@ -4,6 +4,9 @@ namespace Trenndal\SnowtricksBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\ORM\Events;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
  * User
@@ -31,6 +34,7 @@ class User implements UserInterface
      * @var string
      *
      * @ORM\Column(name="username", type="string", length=255, unique=true)
+     * @Assert\NotBlank()
      */
     private $username;
 
@@ -38,6 +42,7 @@ class User implements UserInterface
      * @var string
      *
      * @ORM\Column(name="password", type="string", length=255)
+     * @Assert\NotBlank()
      */
     private $password;
 
@@ -45,6 +50,10 @@ class User implements UserInterface
      * @var string
      *
      * @ORM\Column(name="email", type="string", length=255)
+     * @Assert\Email(
+     *     message = "The email '{{ value }}' is not a valid email.",
+     *     checkMX = true
+     * )
      */
     private $email;
 
@@ -59,8 +68,96 @@ class User implements UserInterface
      * @var array
      *
      * @ORM\Column(name="roles", type="array")
+     * @Assert\Count(
+     *      min = 1,
+     *      minMessage = "You must specify at least one role"
+     * )
      */
     private $roles;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Trenndal\SnowtricksBundle\Entity\Comment", mappedBy="trick")
+     */
+    private $comments;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="url", type="string", length=255)
+     * @Assert\NotBlank()
+     */
+    private $url;
+
+    private $tempUrl;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="alt", type="string", length=255, nullable=true)
+     */
+    private $alt;
+
+
+    /**
+     * @Assert\File(
+     *     maxSize = "3M",
+     *     mimeTypes = {"image/bmp", "image/jpeg", "image/png", "image/gif", "image/jpg"},
+     *     maxSizeMessage = "Please upload images under 3Mo of size ",
+     *     mimeTypesMessage = "Please upload valid images "
+     * )
+     */
+    private $file;
+
+
+    public function getFile()
+    {
+        return $this->file;
+    }
+
+    public function setFile(UploadedFile $file = null)
+    {
+        $this->file = $file;
+        if (null === $this->file) { return; }
+        $this->url=$this->file->guessExtension();
+        $this->alt=$this->file->getClientOriginalName();
+    }
+
+    public function getWebUrl()
+    {
+        return "web/uploads/images/A".$this->id.'.'.$this->url;
+    }
+
+
+    /**
+     * @ORM\PostPersist()
+     * @ORM\PostUpdate()
+     */
+    public function update() { 
+        if (null === $this->file) { return; }
+        $this->preRemoveFile(); $this->removeFile();
+        
+        $this->file->move(__DIR__."/../../../../web/uploads/images/A",$this->id.'.'.$this->file->guessExtension());
+        
+    }
+
+    /**
+     * @ORM\PreRemove()
+     */
+    public function preRemoveFile() {
+        
+        $this->tempUrl = __DIR__."/../../../../".$this->getWebUrl();
+        
+    }
+
+    /**
+     * @ORM\PostRemove()
+     */
+    public function removeFile() {
+        
+        if (file_exists($this->tempUrl)) { unlink($this->tempUrl); }
+        
+    }
+
 
 	public function eraseCredentials(){
 		return $this;
@@ -170,5 +267,29 @@ class User implements UserInterface
     public function getRoles()
     {
         return $this->roles;
+    }
+
+    /**
+     * Set email
+     *
+     * @param string $email
+     *
+     * @return User
+     */
+    public function setEmail($email)
+    {
+        $this->email = $email;
+
+        return $this;
+    }
+
+    /**
+     * Get email
+     *
+     * @return string
+     */
+    public function getEmail()
+    {
+        return $this->email;
     }
 }

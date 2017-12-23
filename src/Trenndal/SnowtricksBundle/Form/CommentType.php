@@ -6,16 +6,15 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\FileType;
 
-class UserType extends AbstractType
+class CommentType extends AbstractType
 {
     /**
      * {@inheritdoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('username')->add('password')->add('email')->add('file', FileType::class)->add('save', SubmitType::class);
+        $builder->add('text')->add('send', SubmitType::class);
     }
     
     /**
@@ -24,7 +23,7 @@ class UserType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'Trenndal\SnowtricksBundle\Entity\User'
+            'data_class' => 'Trenndal\SnowtricksBundle\Entity\Comment'
         ));
     }
 
@@ -33,7 +32,7 @@ class UserType extends AbstractType
      */
     public function getBlockPrefix()
     {
-        return 'trenndal_snowtricksbundle_user';
+        return 'trenndal_snowtricksbundle_comment';
     }
 
 

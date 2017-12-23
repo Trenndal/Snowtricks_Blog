@@ -34,14 +34,27 @@
 {% for image in trick.images %}
 	<script>
 		var $container = $('div#trenndal_snowtricksbundle_edittrick_images');
-		var $container2 = $('div#trenndal_snowtricksbundle_edittrick_videos');
 
 		var index = $container.find(':input').length;
-		var index2 = $container2.find(':input').length;
 		if (index > 0) {
 			for(var i= 1; i < index+1; i++) { 
 				if($container.children('DIV:nth-child('+i+')').attr('img-data')==null){
 					$container.children('DIV:nth-child('+i+')').attr('img-data','{{asset(image.webUrl)}}');
+					break;
+				}
+			}
+		}
+	</script>
+{% endfor %}
+{% for video in trick.videos %}
+	<script>
+		var $container2 = $('div#trenndal_snowtricksbundle_edittrick_videos');
+
+		var index2 = $container2.find(':input').length;
+		if (index2 > 0) {
+			for(var i= 1; i < index2+1; i++) { 
+				if($container2.children('DIV:nth-child('+i+')').attr('video-data')==null){
+					$container2.children('DIV:nth-child('+i+')').attr('video-data','{{asset(video.webUrl)}}');
 					break;
 				}
 			}

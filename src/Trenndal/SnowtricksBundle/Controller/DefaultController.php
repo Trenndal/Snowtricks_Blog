@@ -6,12 +6,16 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Component\Security\Core\SecurityContext;
 
 use Trenndal\SnowtricksBundle\Entity\EditTrick;
 use Trenndal\SnowtricksBundle\Form\EditTrickType;
+use Trenndal\SnowtricksBundle\Entity\Comment;
+use Trenndal\SnowtricksBundle\Form\CommentType;
 
 class DefaultController extends Controller
 {
+
     /**
      * @Route("/", name="home")
      */
@@ -33,14 +37,30 @@ class DefaultController extends Controller
     /**
      * @Route("/trick/{slug}")
      */
-    public function trickAction($slug)
+    public function trickAction($slug, Request $request)
     {
 		$em = $this->getDoctrine()->getManager();
 		$trick = $em->getRepository('TrenndalSnowtricksBundle:EditTrick')->find($slug);
 		if (null === $trick) {
 			throw new NotFoundHttpException("L'annonce d'id ".$slug." n'existe pas.");
 		}
-		
+		if ($this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
+            $user = $this->get('security.token_storage')->getToken()->getUser();
+			$comment=new Comment();
+			$comment->setAuthor($user);
+			$comment->setTrick($trick);
+			$formBuilder = $this->get('form.factory')->createBuilder(CommentType::class, $comment);
+			$form = $formBuilder->getForm();
+			if ($request->isMethod('POST')) {
+				$form->handleRequest($request);
+				if ($form->isSubmitted() && $form->isValid()) {
+					$em->persist($comment);
+					$em->flush();
+					return $this->redirect('/trick/'.$slug);
+				}
+			}
+			return $this->render('TrenndalSnowtricksBundle:Default:trick.html.twig',array('title'=>$trick->getName(),'form' => $form->createView(),  'trick'=>$trick ));
+		}
 		
         return $this->render('TrenndalSnowtricksBundle:Default:trick.html.twig',array('title'=>$trick->getName(), 'trick'=>$trick ));
     }
@@ -84,7 +104,7 @@ class DefaultController extends Controller
 		
 		if ($request->isMethod('POST')) {
 			$form->handleRequest($request);
-			if ($form->isValid()) {
+			if ($form->isSubmitted() && $form->isValid()) {
 				$em = $this->getDoctrine()->getManager();
 				$em->persist($trick);
 				foreach($trick->getImages() as $image){ $image->setTrick($trick);}
