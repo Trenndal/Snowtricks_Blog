@@ -1,4 +1,5 @@
 <?php
+// src/Trenndal/Snowtrickbundle/Form/EditTrickType.php
 
 namespace Trenndal\SnowtricksBundle\Form;
 

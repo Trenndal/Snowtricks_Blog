@@ -1,4 +1,5 @@
 <?php
+// src/Trenndal/Snowtrickbundle/Entity/EditTrick.php
 
 namespace Trenndal\SnowtricksBundle\Entity;
 

@@ -28,7 +28,7 @@
 					<a href="{{'/trick/'~ trick.id}}" class="btn btn-secondary">Read More</a></p>
 				</div>
 				{% if is_granted('ROLE_USER') %}
-					<div class="positioner"><a href="{{ path('delete_trick', {slug:trick.id ,token: csrf_token('intention')}) }}" class="btn btn-danger pull-right" onclick="return confirm('Are you absolutely sure you want to delete?');"><i class="icon-2x icon-trash"></i></a></div>
+					<div class="positioner"><a href="{{ path('delete_trick', {slug:trick.id ,token: csrf_token('')}) }}" class="btn btn-danger pull-right" onclick="return confirm('Are you absolutely sure you want to delete?');"><i class="icon-2x icon-trash"></i></a></div>
 					<div class="positioner2"><a href="{{'/edit/'~ trick.id}}" class="btn btn-success pull-left" ><i class="icon-2x icon-pencil"></i></a></div>
 				{% endif %}
 			</div>
@@ -42,14 +42,17 @@
 	<!-- Pagination -->
 	<div class="bg-faded p-4 my-4">
 		<ul class="pagination justify-content-center mb-0">
-			<li class="page-item disabled">
-				<a class="page-link" href="#">&larr; Older</a>
+			<li class="page-item {{ page<2 ? 'disabled'  }}">
+				<a class="page-link" href="{{ path('tricks_list', {'page': page-1}) }}">&larr; Older</a>
 			</li>
-			<li class="page-item disabled">
-				<a class="page-link" href="#">1</a>
-			</li>
-			<li class="page-item disabled">
-				<a class="page-link" href="#">Newer &rarr;</a>
+			{% for p in range(1, nbPages) %}
+				<li class="page-item {{ p==page ? 'disabled'  }}">
+					<a class="page-link" href="{{ path('tricks_list', {'page': p}) }}">{{p}}</a>
+				</li>
+			{% else %} jj
+			{% endfor %}
+			<li class="page-item {{ page>=nbPages ? 'disabled'  }}">
+				<a class="page-link" href="{{ path('tricks_list', {'page': page+1}) }}">Newer &rarr;</a>
 			</li>
 		</ul>
 	</div>

@@ -79,7 +79,7 @@ class User implements UserInterface
     private $roles;
 
     /**
-     * @ORM\OneToMany(targetEntity="Trenndal\SnowtricksBundle\Entity\Comment", mappedBy="trick")
+     * @ORM\OneToMany(targetEntity="Trenndal\SnowtricksBundle\Entity\Comment", mappedBy="author")
      */
     private $comments;
 

@@ -26,23 +26,25 @@ class DefaultController extends Controller
 	
     /**
      * @Route("/tricks/")
+     * @Route("/tricks/{page}", name="tricks_list", requirements={"page"="\d+"})
      */
-    public function tricksAction()
+    public function tricksAction($page = 1, $max = 10)
     {
         $em = $this->getDoctrine()->getManager();
-        $tricks = $em->getRepository('TrenndalSnowtricksBundle:EditTrick')->findAll();
-        return $this->render('TrenndalSnowtricksBundle:Default:tricks.html.twig',array('tricks'=>$tricks));
+        $tricks = $em->getRepository('TrenndalSnowtricksBundle:EditTrick')->getTricks($page,$max);
+        return $this->render('TrenndalSnowtricksBundle:Default:tricks.html.twig',array('tricks'=>$tricks, 'page'=>$page, 'nbPages'=> ceil(count($tricks)/$max)));
     }
 	
     /**
      * @Route("/trick/{slug}")
+     * @Route("/trick/{slug}/{page}", requirements={"page"="\d+"})
      */
-    public function trickAction($slug, Request $request)
+    public function trickAction($slug, Request $request, $page = 1)
     {
 		$em = $this->getDoctrine()->getManager();
 		$trick = $em->getRepository('TrenndalSnowtricksBundle:EditTrick')->find($slug);
 		if (null === $trick) {
-			throw new NotFoundHttpException("L'annonce d'id ".$slug." n'existe pas.");
+			throw new NotFoundHttpException("Trick : ".$slug." no found.");
 		}
 		if ($this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
             $user = $this->get('security.token_storage')->getToken()->getUser();
@@ -73,7 +75,7 @@ class DefaultController extends Controller
 	{
 		$em = $this->getDoctrine()->getManager();
 		$trick = $em->getRepository('TrenndalSnowtricksBundle:EditTrick')->find($slug);
-		if($trick and $this->isCsrfTokenValid('intention', $token)) {
+		if($trick and $this->isCsrfTokenValid('', $token)) {
 			$em->remove($trick);
 			$em->flush();
 		}
