@@ -43,7 +43,7 @@
 	<div class="bg-faded p-4 my-4">
 		<ul class="pagination justify-content-center mb-0">
 			<li class="page-item {{ page<2 ? 'disabled'  }}">
-				<a class="page-link" href="{{ path('tricks_list', {'page': page-1}) }}">&larr; Older</a>
+				<a class="page-link" href="{{ path('tricks_list', {'page': page-1}) }}">&larr; Newer</a>
 			</li>
 			{% for p in range(1, nbPages) %}
 				<li class="page-item {{ p==page ? 'disabled'  }}">
@@ -52,7 +52,7 @@
 			{% else %} jj
 			{% endfor %}
 			<li class="page-item {{ page>=nbPages ? 'disabled'  }}">
-				<a class="page-link" href="{{ path('tricks_list', {'page': page+1}) }}">Newer &rarr;</a>
+				<a class="page-link" href="{{ path('tricks_list', {'page': page+1}) }}">Older &rarr;</a>
 			</li>
 		</ul>
 	</div>

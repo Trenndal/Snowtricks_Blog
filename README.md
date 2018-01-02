@@ -31,8 +31,14 @@ parameters:
 ```
 3. Generate the Database :
 ```bash 
-php composer create-project Trenndal/Snowtricks_Blog --repository-url="https://github.com/Trenndal/Snowtricks_Blog" 
-```
-You can load a snowtricks set with the URL : 'siteURL/installer' .
+php bin/console doctrine:database:create 
+php app/console doctrine:schema:update --force
+``` You can load a snowtricks set with the URL : 'siteURL/installer' .
 5. [Deploy the project to production mode](https://symfony.com/doc/current/deployment.html)
+Modify file *.htaccess* :
+```ini 
+    # Change below before deploying to production
+    RewriteRule ^(.*)$ web/app.php [QSA,L]
+    #RewriteRule ^(.*)$ web/app_dev.php [QSA,L]
+```
 

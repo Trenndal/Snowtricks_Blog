@@ -12,22 +12,27 @@ use Trenndal\SnowtricksBundle\Entity\EditTrick;
 use Trenndal\SnowtricksBundle\Entity\Image;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
-class DefaultController extends Controller
+class InstallerController extends Controller
 {
 	private function addTrick($em, $name, $description, $typeGroup, $images){
 		$trick =  new EditTrick();
 		$trick->setName($name);
 		$trick->setDescription($description);
 		$trick->setTypeGroup($typeGroup);
+		$pics = array();
 		foreach($images as $imageUrl){
 			$image= new Image();
-			$file = new File('/web/img/'.$imageUrl);
+			$pics[]=$image;
+			$image->setUrl('jpg');
+			$image->setAlt($imageUrl);
 			$image->setTrick($trick);
-			$image->setFile(new UploadedFile('/web/img/'.$imageUrl,'Picture',$file.getMimeType()));
 			$trick->addImage($image);
 		}
 		$em->persist($trick);
 		$em->flush();
+		foreach($pics as $pic){
+			copy('../web/img/'.$pic->getAlt(),'../web/uploads/images/'.$pic->getId().'.jpg');
+		}
 	}
 	
 	private function addGrabs($em){

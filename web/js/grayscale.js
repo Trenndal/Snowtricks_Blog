@@ -25,8 +25,10 @@
   var navbarCollapse = function() {
     if ($("#mainNav").offset().top > 150) {
       $("#mainNav").addClass("navbar-shrink");
+	  $("#return-to-top").addClass("button-show");
     } else {
       $("#mainNav").removeClass("navbar-shrink");
+	  $("#return-to-top").removeClass("button-show");
     }
   };
   // Collapse now if page is not at top
@@ -40,5 +42,8 @@
     offset: 54
   });
 
-})(jQuery); // End of use strict
+$('#return-to-top').click(function() {      // When arrow is clicked
+    $('html,body').animate({scrollTop:0},'slow');
+});
 
+})(jQuery); // End of use strict
